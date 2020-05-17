@@ -18,7 +18,6 @@ class InitialConditions(UserExpression):
 # Sub domain for Periodic boundary condition
 class PeriodicBoundary(SubDomain):
 
-    # Left boundary is "target domain" G
     def inside(self, x, on_boundary):
         # return True if on left or bottom boundary AND NOT on one of the two corners (0, 1) and (1, 0)
         return bool((near(x[0], 0) or near(x[1], 0)) and
@@ -39,7 +38,7 @@ class PeriodicBoundary(SubDomain):
 
 lmbda  = 1.0e-02  # surface parameter
 dt     = 5.0e-06  # time step
-theta  = 0.5      # time stepping family, e.g. theta=1 -> backward Euler, theta=0.5 -> Crank-Nicolson
+theta  = 0.5      # time stepping family, e.g. theta=1 -> backward Euler, theta=0.5 -> Crank-Nicolson, theta=0 -> forward Euler
 
 # Create mesh and build function space
 mesh = UnitSquareMesh.create(96, 96, CellType.Type.quadrilateral)
