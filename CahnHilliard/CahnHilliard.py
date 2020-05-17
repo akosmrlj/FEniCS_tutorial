@@ -13,6 +13,28 @@ class InitialConditions(UserExpression):
         values[1] = 0.0
     def value_shape(self):
         return (2,)
+    
+    
+# Sub domain for Periodic boundary condition
+class PeriodicBoundary(SubDomain):
+
+    # Left boundary is "target domain" G
+    def inside(self, x, on_boundary):
+        # return True if on left or bottom boundary AND NOT on one of the two corners (0, 1) and (1, 0)
+        return bool((near(x[0], 0) or near(x[1], 0)) and
+                (not ((near(x[0], 0) and near(x[1], 1)) or
+                        (near(x[0], 1) and near(x[1], 0)))) and on_boundary)
+
+    def map(self, x, y):
+        if near(x[0], 1) and near(x[1], 1):
+            y[0] = x[0] - 1.
+            y[1] = x[1] - 1.
+        elif near(x[0], 1):
+            y[0] = x[0] - 1.
+            y[1] = x[1]
+        else:   # near(x[1], 1)
+            y[0] = x[0]
+            y[1] = x[1] - 1.
             
 
 lmbda  = 1.0e-02  # surface parameter
@@ -22,7 +44,7 @@ theta  = 0.5      # time stepping family, e.g. theta=1 -> backward Euler, theta=
 # Create mesh and build function space
 mesh = UnitSquareMesh.create(96, 96, CellType.Type.quadrilateral)
 P = FiniteElement('Lagrange', mesh.ufl_cell(), 1)
-MFS = FunctionSpace(mesh, MixedElement([P,P]))
+MFS = FunctionSpace(mesh, MixedElement([P,P]),constrained_domain=PeriodicBoundary())
 
 # Define functions
 u     = Function(MFS)  # current solution
@@ -37,7 +59,7 @@ q, v  = split(tf)
 
 
 
-u.rename("concentration","chemical potential")
+u.rename("fields","")
 
 # Create intial conditions and interpolate
 u_init = InitialConditions(degree=1)
