@@ -1,3 +1,5 @@
+from __future__ import print_function
+from fenics import *
 from dolfin import *
 from mshr import *
 import matplotlib.pyplot as plt
@@ -5,29 +7,16 @@ import matplotlib.pyplot as plt
 # Create rectangular mesh with two circular inclusions
 N=100
 L=1
-R_inc1=0.05
-R_inc2=0.08
+R_2=0.05
+R_3=0.08
 domain = Rectangle(Point(-L/2,-L/2),Point(L/2,L/2))
 # mark subdomains with markers 1, 2, 3
 domain.set_subdomain(1, Rectangle(Point(-L/2,-L/2),Point(L/2,L/2)))
-domain.set_subdomain(2, Circle(Point(0.,0.43), R_inc1))
-domain.set_subdomain(3, Circle(Point(-0.15,0.35), R_inc2))
+domain.set_subdomain(2, Circle(Point(0.,0.43), R_2))
+domain.set_subdomain(3, Circle(Point(-0.15,0.35), R_3))
 mesh = generate_mesh(domain, N)
 d = mesh.topology().dim() # dimensionality of the problem
 markers = MeshFunction("size_t", mesh, d , mesh.domains())
-
-# elastic constants of the matrix and two circular inclusions
-E_matrix=1
-E_inc1=10
-E_inc2=0.1
-nu_matrix=0.3
-nu_inc1=0.2
-nu_inc2=0.1
-
-# external tractions
-sigma_xx=0.2*E_matrix
-tx_left=-sigma_xx
-tx_right=+sigma_xx
 
 
 # define boundary subdomains
@@ -53,7 +42,7 @@ top = Top()
 bottom = Bottom()
 
 # mark boundary subdomains with markers 1, 2, 3, 4
-boundaries = MeshFunction("size_t", mesh, mesh.topology().dim()-1, 0)
+boundaries = MeshFunction("size_t", mesh, d-1, 0)
 boundaries.set_all(0)
 left.mark(boundaries, 1)
 right.mark(boundaries, 2)
@@ -61,9 +50,13 @@ top.mark(boundaries, 3)
 bottom.mark(boundaries, 4)
 
 
-# define integral measures for subdomains in the bulk and on the boundary
-dx = Measure('dx', domain=mesh, subdomain_data=markers)
-ds = Measure('ds', domain=mesh, subdomain_data=boundaries)
+# elastic constants of the matrix and two circular inclusions
+E_1=1
+E_2=10
+E_3=0.1
+nu_1=0.3
+nu_2=0.2
+nu_3=0.1
 
 
 
@@ -74,11 +67,11 @@ class E_class(UserExpression):
         super().__init__(**kwargs)
     def eval_cell(self, value, x, ufc_cell):
         if markers[ufc_cell.index] == 1:
-            value[0] = E_matrix
+            value[0] = E_1
         elif markers[ufc_cell.index] == 2:
-            value[0] = E_inc1
+            value[0] = E_2
         else:
-            value[0] = E_inc2
+            value[0] = E_3
 
 # define class for calculating the Poisson's ratio over the whole domain
 class nu_class(UserExpression):
@@ -87,27 +80,24 @@ class nu_class(UserExpression):
         super().__init__(**kwargs)
     def eval_cell(self, value, x, ufc_cell):
         if markers[ufc_cell.index] == 1:
-            value[0] = nu_matrix
+            value[0] = nu_1
         elif markers[ufc_cell.index] == 2:
-            value[0] = nu_inc1
+            value[0] = nu_2
         else:
-            value[0] = nu_inc2
+            value[0] = nu_3
 
-# elastic constants
+# functions of elastic constants on the whole domain
 E = E_class(degree=1)
 nu = nu_class(degree=1)
 mu=E/2/(1+nu)
 Lambda=E*nu/(1-nu*nu)
 
-# define strain and stress
-def epsilon(u):
-    return sym(grad(u))
-def sigma(u):
-    return Lambda*tr(epsilon(u))*Identity(d) + 2*mu*epsilon(u)
+
 
 
 #define function space with mixed finite elements (displacements + 3 Lagrange multipliers)
-P1 = FiniteElement('Lagrange', mesh.ufl_cell(), 1)
+degreeElements = 1
+P1 = FiniteElement('Lagrange', mesh.ufl_cell(), degreeElements)
 R = FiniteElement('Real', mesh.ufl_cell(), 0)
 MFS = FunctionSpace(mesh, MixedElement([(P1*P1),(R*R),R]))
 
@@ -118,23 +108,41 @@ u, c_trans, c_rot = split(f)
 tf = TestFunction(MFS)
 
 
+# define strain and stress
+def epsilon(u):
+    return sym(grad(u))
+def sigma(u):
+    return 2*mu*epsilon(u) + Lambda*tr(epsilon(u))*Identity(d)
+
+#external load
+sigma_xx = 0.2*E_1
+sigma_xy = 0
+sigma_yy = 0
+sigma_0 = Constant(((sigma_xx,sigma_xy),(sigma_xy,sigma_yy)))
+
+#unit normal vector to the boundary
+n = FacetNormal(mesh)
+                   
+#tractions on boundaries
+t = sigma_0 * n
+
 #calculate elastic energy
 elastic_energy = 1/2*inner(sigma(u),epsilon(u))*dx
 #calculate work of external tractions
-work = tx_left*u[0]*ds(1) + tx_right*u[0]*ds(2)
+work = dot(t,u)*ds
 #Lagrange multipliers to prevent rigid body motions
 r=Expression(('x[0]','x[1]'),degree=1)
 constraints = dot(c_trans,u)*dx + c_rot*(r[0]*u[1]-r[1]*u[0])*dx
-
 #total free energy
-Energy =  elastic_energy - work + constraints
+free_energy =  elastic_energy - work + constraints
+
 
 #minimize total free energy
-Res = derivative(Energy, f, tf)
+Res = derivative(free_energy, f, tf)
 solve(Res == 0, f)
 
 #calculate total free energy
-print("Tot Free Energy = ",assemble(Energy))
+print("Tot Free Energy = ",assemble(free_energy))
 print("Elastic Energy = ",assemble(elastic_energy))
 print("Work = ",assemble(work))
 print("Constraints = ",assemble(constraints))

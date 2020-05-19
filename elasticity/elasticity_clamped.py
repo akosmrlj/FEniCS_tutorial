@@ -10,18 +10,24 @@ L=1
 R=0.2
 domain = Rectangle(Point(-L/2,-L/2),Point(L/2,L/2)) - Circle(Point(0.,0.), R)
 mesh=generate_mesh(domain, N)
+d = mesh.topology().dim() # dimensionality of the problem
+print("d = ",d)
+plot(mesh,linewidth=0.3)
+plt.show()
 
-# define elastic constants
+# elastic constants
 E=1
 nu=0.4
 mu=E/2/(1+nu)
 Lambda=E*nu/(1-nu*nu)
 
-Delta=0.2*L # displacement of the clamped ends
-d=2 #dimensionality of the system
+# displacement of the clamped ends
+Delta=0.2*L
+
 
 #define vector function space, function u, and test function v
-VFS = VectorFunctionSpace(mesh, 'P', 1)
+degreeElements = 1
+VFS = VectorFunctionSpace(mesh, 'Lagrange', degreeElements)
 u  = Function(VFS)
 v  = TestFunction(VFS)
 
@@ -44,7 +50,7 @@ bc = [bc_left_X, bc_right_X, bc_left_Y, bc_right_Y]
 def epsilon(u):
     return sym(grad(u))
 def sigma(u):
-    return Lambda*tr(epsilon(u))*Identity(d) + 2*mu*epsilon(u)
+    return 2*mu*epsilon(u) + Lambda*tr(epsilon(u))*Identity(d)
 
 # elastic energy
 Energy = 1/2*inner(sigma(u),epsilon(u))*dx
@@ -64,7 +70,7 @@ fileD << u;
 # calculate and export von Mises stress
 FS = FunctionSpace(mesh, 'Lagrange', 1)
 devStress = sigma(u) - (1./d)*tr(sigma(u))*Identity(d)  # deviatoric stress
-von_Mises = project(sqrt(3./2*inner(devStress, devStress)), FS)
+von_Mises = project(sqrt(3/2*inner(devStress, devStress)), FS)
 von_Mises.rename("von Mises","")
 fileS = File("data/clamped_vonMises_stress.pvd");
 fileS << von_Mises;
