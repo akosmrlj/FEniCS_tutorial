@@ -18,7 +18,7 @@ FE_sigma = FiniteElement('Lagrange', mesh.ufl_cell(), degreeElements)
 FS = FunctionSpace(mesh, MixedElement([FE_u, FE_sigma*FE_sigma]))
 
 # define function and split it into u and sigma
-F  = Function(FS)           # center line
+F  = Function(FS) 
 u,sigma = split(F)
 
 # define test function and split it into v and tau
@@ -67,6 +67,7 @@ plt.colorbar(c)
 plot(mesh,linewidth=0.3)
 plt.show()
 
+# plot solution for div(sigma)=div(a*grad(u))
 V = FunctionSpace(mesh, 'Lagrange', degreeElements)
 divSigma = project(div(sigma), V)
 c=plot(divSigma,mode='color',title='$\\nabla \cdot \sigma=\\nabla \cdot (a \\nabla u)$',vmin=-1.1,vmax=-0.9)

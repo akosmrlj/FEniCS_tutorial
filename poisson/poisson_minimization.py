@@ -8,11 +8,10 @@ R = 1. # radius
 N = 20 # mesh density
 domain = Circle(Point(0., 0.), R)
 mesh = generate_mesh(domain, N)
-#plot(mesh,linewidth=0.3)
 
 
 #define function space, function u, and test function v
-degreeElements = 3
+degreeElements = 1
 FS = FunctionSpace(mesh, 'Lagrange', degreeElements)
 u = Function(FS)
 v = TestFunction(FS)
@@ -28,7 +27,7 @@ class G(UserExpression):
     def eval_cell(self, value, x, ufc_cell):
         value[0]=x[1]
 
-g  = G(degree=3)
+g  = G(degree=degreeElements)
 
 
 #impose Dirichlet boundary conditions
@@ -39,11 +38,11 @@ uD = Expression('x[0]',degree=degreeElements)
 bc = DirichletBC(FS, uD, right_boundary)
 
 
-# energy functional
-Energy = (1/2*a*dot(grad(u),grad(u))-f*u)*dx - g*u*ds
+# functional
+E = (1/2*a*dot(grad(u),grad(u))-f*u)*dx - g*u*ds
 
 # solve the problem
-Res = derivative(Energy, u, v)
+Res = derivative(E, u, v)
 solve(Res == 0, u, bc)
 
 # plot solution
