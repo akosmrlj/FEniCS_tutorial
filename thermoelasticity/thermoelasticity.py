@@ -9,8 +9,10 @@ N=30
 L=1
 domain = Rectangle(Point(0.,0.),Point(L,L))
 mesh=generate_mesh(domain, N)
-
-d=2
+d = mesh.topology().dim() # dimensionality of the problem
+print("d = ",d)
+plot(mesh,linewidth=0.3)
+plt.show()
 
 # elastic constants
 E=1
@@ -23,13 +25,17 @@ alpha = 0.1
 # material conductivity
 k = 1
 
+
+#define function space, temperature function T, and test function dT
+degreeElements = 1
+FS = FunctionSpace(mesh, 'Lagrange', degreeElements)
+T  = Function(FS)
+delta_T = TestFunction(FS)
+
+
 # temperatures at the boundaries
 T0 = 0
 T1 = 1
-
-#degree of finite elements
-degreeElements = 1
-
 
 #define left, right, top, bottom boundaries
 def left_boundary(x, on_boundary):
@@ -41,12 +47,6 @@ def top_boundary(x, on_boundary):
 def bottom_boundary(x, on_boundary):
     return on_boundary and near(x[1],0);
 
-
-#define function space, temperature function T, and test function dT
-FS = FunctionSpace(mesh, 'Lagrange', degreeElements)
-T  = Function(FS)
-dT = TestFunction(FS)
-
 # impose Dirichlet boundary conditions for temperature
 bc_T_left   = DirichletBC(FS, Constant(T0), left_boundary)
 bc_T_right  = DirichletBC(FS, Constant(T0), right_boundary)
@@ -57,7 +57,7 @@ bc_T = [bc_T_left, bc_T_right, bc_T_top, bc_T_bottom]
 
 
 # solve for the temperature field
-Res_T = k*dot(grad(T),grad(dT))*dx
+Res_T = k*dot(grad(T),grad(delta_T))*dx
 solve(Res_T == 0, T, bc_T)
 
 # plot temperature field
@@ -76,6 +76,13 @@ VFS = VectorFunctionSpace(mesh, 'Lagrange', degreeElements)
 u  = Function(VFS)
 v  = TestFunction(VFS)
 
+
+#clamped boundary conditions on the left and right boundaries
+bc_u_left  = DirichletBC(VFS, Constant((0.,0.)), left_boundary)
+bc_u_right = DirichletBC(VFS, Constant((0.,0.)), right_boundary)
+
+bc_u = [bc_u_left, bc_u_right]
+
 # define total strain
 def epsilon_tot(u):
     return sym(grad(u))
@@ -84,15 +91,7 @@ def epsilon_elastic(u,T):
     return epsilon_tot(u) - alpha*T*Identity(d)
 # define stress
 def sigma(u,T):
-    return Lambda*tr(epsilon_elastic(u,T))*Identity(d) + 2*mu*epsilon_elastic(u,T)
-
-
-#clamped boundary conditions on the left and right boundaries
-bc_u_left  = DirichletBC(VFS, Constant((0.,0.)), left_boundary)
-bc_u_right = DirichletBC(VFS, Constant((0.,0.)), right_boundary)
-
-bc_u = [bc_u_left, bc_u_right]
-
+    return 2*mu*epsilon_elastic(u,T) + Lambda*tr(epsilon_elastic(u,T))*Identity(d)
 
 # elastic energy functional
 Energy = 1/2*inner(sigma(u,T),epsilon_elastic(u,T))*dx
