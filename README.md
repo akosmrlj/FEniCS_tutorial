@@ -45,11 +45,11 @@ Afterward, you can either run the python code directly from the terminal, e.g.
 
 `python poisson_basic.py`
 
-or you can open the Jupyter lab as
+or you can start the Jupyter lab as
 
 `jupyter lab`
 
-where you can open Jupyer notebooks with the code and explanations.
+where you can open the Jupyer notebooks containing the code and explanations.
 
 ## Additional software
 
