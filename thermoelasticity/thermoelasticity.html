@@ -13106,7 +13106,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The equilibrium temperature profile $T$, where temperature is measured relative to some reference temperature, can be obtained from the Fourier's law
-$$\int_\Omega d{\bf x}\ \nabla \cdot (k \nabla T)=0,$$
+$$\nabla \cdot (k \nabla T)=0,$$
 where $k=1$ is the material conductivity. In FEniCS, we are going to solve this PDE using the weak form
 $$\int_\Omega d{\bf x}\ [\nabla \cdot (k \nabla T)] \delta T=-\int_\Omega d{\bf x}\ k \nabla T \cdot \nabla \delta T=0.$$</p>
 

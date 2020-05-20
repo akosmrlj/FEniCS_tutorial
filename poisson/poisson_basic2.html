@@ -13310,7 +13310,7 @@ where we introduced the time-dependent source term $f(t)$ via the <code>Expressi
 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
     <span class="c1"># update the value of the source term</span>
     <span class="n">f</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">Constant</span><span class="p">((</span><span class="n">t</span><span class="p">)))</span>
-
+    
     <span class="c1"># solve the problem</span>
     <span class="n">solve</span><span class="p">(</span><span class="n">Res</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
 
