@@ -17,7 +17,7 @@ Cloning the repository
 
 Open a terminal and clone the repository with
 
-`git clone git@github.com:akosmrlj/FEniCS_tutorial.git`
+`git clone https://github.com/akosmrlj/FEniCS_tutorial.git`
 
 This command will create a local copy of the repository on your computer. It will be stored in a directory called *FEniCS_tutorial*.
 
