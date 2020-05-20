@@ -53,7 +53,7 @@ where you can open the Jupyer notebooks containing the code and explanations.
 
 ## Additional software
 
-I recommend installing [Paraview](https://www.paraview.org/) for visualisation.
+We recommend installing [Paraview](https://www.paraview.org/) for visualisation.
 
 Note: It is also possible to install Paraview via the conda-forge channel. However, this has not been tested and one may encounter a number of package dependency issues if trying to install Paraview in the fenicsproject conda environment provided above.
 
