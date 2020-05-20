@@ -59,7 +59,7 @@ Note: It is also possible to install Paraview via the conda-forge channel. Howev
 
 ## Additional resources
 
-If you want to start exploring FEniCS before then you can check a very detailed FEniCS tutorial eBook (https://fenicsproject.org/tutorial/). Please note that this eBook was written in 2017 and some of the functions have slightly changed. Here are a few demos with explanations that are up to date:
+There is a very detailed FEniCS tutorial [eBook](https://fenicsproject.org/tutorial/). Please note that this eBook was written in 2017 and some of the functions have slightly changed. Here are a few demos with explanations that are up to date:
 https://fenicsproject.org/docs/dolfin/latest/python/demos.html
 
 ## Lecturer
