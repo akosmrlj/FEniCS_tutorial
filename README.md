@@ -53,13 +53,13 @@ where you can open the Jupyer notebooks containing the code and explanations.
 
 ## Additional software
 
-We recommend installing [Paraview](https://www.paraview.org/) for visualisation.
+We recommend installing [Paraview](https://www.paraview.org/) for visualization.
 
 Note: It is also possible to install Paraview via the conda-forge channel. However, this has not been tested and one may encounter a number of package dependency issues if trying to install Paraview in the fenicsproject conda environment provided above.
 
 ## Additional resources
 
-There is a very detailed FEniCS tutorial [eBook](https://fenicsproject.org/tutorial/). Please note that this eBook was written in 2017 and some of the functions have slightly changed. Here are a few demos with explanations that are up to date:
+There is a very detailed [FEniCS tutorial eBook](https://fenicsproject.org/tutorial/). Please note that this eBook was written in 2017 and some of the functions have slightly changed. Here are a few demos with explanations that are up to date:
 https://fenicsproject.org/docs/dolfin/latest/python/demos.html
 
 ## Lecturer
