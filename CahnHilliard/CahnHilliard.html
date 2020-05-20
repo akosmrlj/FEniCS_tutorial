@@ -13097,9 +13097,9 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <a href="https://en.wikipedia.org/wiki/Cahn%E2%80%93Hilliard_equation" target="_blank">Cahn-Hilliard equation</a> describes the process of phase separation, by which the two components of a binary fluid spontaneously separate and form domains enriched in one of the two component. The driving force for the phase separation is the tendency of the system to lower the total free energy
+<p>The <a href="https://en.wikipedia.org/wiki/Cahn%E2%80%93Hilliard_equation" target="_blank">Cahn-Hilliard equation</a> describes the process of phase separation, by which the two components of a binary fluid spontaneously separate and form domains enriched in one of the two components. The driving force for the phase separation is the tendency of the system to lower the total free energy
 $$G[c] = \int_\Omega d{\bf x}\, \left[f(c) + \frac{1}{2}\lambda (\nabla c)^2\right],$$
-where the first term describes the bulk free energy and the second term the interfacial energy between the two phases. The bulk free energy density is commonly described with the double well potential and in this example we use the free energy density $f(c)=100 c^2 (1-c)^2$. The two minima are located at $c=0$ and $c=1$ and they correspond to the concentrations of the first component in the two separated phases.</p>
+where $c$ is an order parameter and the two phases correspond to $c=0$ and $c=1$. The first term in the above equation describes the bulk free energy and the second term the interfacial energy between the two phases. The bulk free energy density is commonly described with the double well potential and in this example we use the free energy density $f(c)=100 c^2 (1-c)^2$.</p>
 
 </div>
 </div>
@@ -13111,8 +13111,9 @@ where the first term describes the bulk free energy and the second term the inte
 $$\delta G= \int_\Omega d{\bf x} \ \left[f'(c) \delta c + \lambda \nabla c \cdot \nabla \delta c\right]=\int_\Omega d{\bf x}\  \left[f'(c) - \lambda (\nabla^2 c) \right] \delta c \equiv \int_\Omega  d{\bf x}\ \mu \delta c,$$
 where we used integration by parts and defined the chemical potential
 $$\mu = f'(c) - \lambda \nabla^2 c.$$
-The gradients of chemical potential provide the driving force for the redistribution of material and this kinetics is described with
-$$\frac{\partial c}{\partial t} = \nabla \cdot (M \nabla \mu).$$</p>
+The gradients of the chemical potential provide the driving force for the redistribution of material, and this kinetics is described with
+$$\frac{\partial c}{\partial t} = \nabla \cdot (M \nabla \mu),$$
+where $M$ is the mobility.</p>
 
 </div>
 </div>
@@ -13257,7 +13258,7 @@ In these example, we solve the Cahn-Hilliard equation on a unit square domain wi
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We define functions ${\bf u}_{new}$ and ${\bf u}_{old}$, where we store fields $(c_{n+1},\mu_{n+1})$ and $(c_{n},\mu_{n})$, respectively. We also split the function to the concentration and chemical potential fields. In a similar way we introduce the test function, which is split into two test functions $q$ and $v$.</p>
+<p>We define functions ${\bf u}_{new}$ and ${\bf u}_{old}$, where we store fields $(c_{n+1},\mu_{n+1})$ and $(c_{n},\mu_{n})$, respectively. We also split the function into the concentration and chemical potential fields. In a similar way we introduce the test function, which is split into two test functions $q$ and $v$.</p>
 
 </div>
 </div>
@@ -13289,7 +13290,7 @@ In these example, we solve the Cahn-Hilliard equation on a unit square domain wi
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To prescribe intitial conditions with the concentration values that are chosen randomly from the interval $(0.62,0.64)$ we implement the <code>UserExpression</code> class. In the constructor <code>(__init__)</code>, the random number generator is seeded. If the program is run in parallel, the random number generator is seeded using the rank (process number) to ensure a different sequence of numbers on each process. The function <code>eval</code> returns the values for a function at a given point $\bf x$. The first component of the function is a randomized value of the concentration $c$ and the second value is the intial value of the chemical potential.
-The function <code>value_shape</code> declares that the <code>UseExpression</code> is vector valued with dimension two.</p>
+The function <code>value_shape</code> declares that the <code>UseExpression</code> is a vector with a dimension two.</p>
 
 </div>
 </div>
@@ -13406,7 +13407,7 @@ The function <code>value_shape</code> declares that the <code>UseExpression</cod
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Iteratively solve the coupled PDEs for 50 time steps. At each step we first copy the values of fields from the ${\bf u}_{new}$ function to the ${\bf u}_{old}$ function. Then we solve the coupled PDEs and store the new values of fields in the function ${\bf u}_{new}$. Finally, we save the values of fields for the visualization in <a href="https://www.paraview.org/" target="_blank">ParaView</a></p>
+<p>Iteratively solve the coupled PDEs for 50 time steps. At each step we first copy the values of fields from the ${\bf u}_{new}$ function to the ${\bf u}_{old}$ function. Then we solve the coupled PDEs and store the new values of fields in the function ${\bf u}_{new}$. Finally, we save the values of fields for visualization in <a href="https://www.paraview.org/" target="_blank">ParaView</a></p>
 
 </div>
 </div>
