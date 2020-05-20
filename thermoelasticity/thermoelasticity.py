@@ -5,20 +5,20 @@ import matplotlib.pyplot as plt
 
 
 # create square mesh
-N=30
-L=1
+N = 30
+L = 1
 domain = Rectangle(Point(0.,0.),Point(L,L))
-mesh=generate_mesh(domain, N)
+mesh = generate_mesh(domain, N)
 d = mesh.topology().dim() # dimensionality of the problem
 print("d = ",d)
 plot(mesh,linewidth=0.3)
 plt.show()
 
 # elastic constants
-E=1
-nu=0.4
-mu=E/2/(1+nu)
-Lambda=E*nu/(1-nu*nu)
+E = 1
+nu = 0.4
+mu = E/2/(1+nu)
+Lambda = E*nu/(1-nu*nu)
 
 # thermal expansion coefficient
 alpha = 0.1

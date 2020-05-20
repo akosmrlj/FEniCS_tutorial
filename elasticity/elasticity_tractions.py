@@ -5,10 +5,10 @@ from mshr import *
 import matplotlib.pyplot as plt
 
 # Create rectangular mesh with two circular inclusions
-N=100
-L=1
-R_2=0.05
-R_3=0.08
+N = 100
+L = 1
+R_2 = 0.05
+R_3 = 0.08
 domain = Rectangle(Point(-L/2,-L/2),Point(L/2,L/2))
 # mark subdomains with markers 1, 2, 3
 domain.set_subdomain(1, Rectangle(Point(-L/2,-L/2),Point(L/2,L/2)))
@@ -51,13 +51,12 @@ bottom.mark(boundaries, 4)
 
 
 # elastic constants of the matrix and two circular inclusions
-E_1=1
-E_2=10
-E_3=0.1
-nu_1=0.3
-nu_2=0.2
-nu_3=0.1
-
+E_1 = 1
+E_2 = 10
+E_3 = 0.1
+nu_1 = 0.3
+nu_2 = 0.2
+nu_3 = 0.1
 
 
 # define class for calculating the Young's modulus over the whole domain
@@ -72,6 +71,8 @@ class E_class(UserExpression):
             value[0] = E_2
         else:
             value[0] = E_3
+    def value_shape(self):
+        return ()
 
 # define class for calculating the Poisson's ratio over the whole domain
 class nu_class(UserExpression):
@@ -85,12 +86,14 @@ class nu_class(UserExpression):
             value[0] = nu_2
         else:
             value[0] = nu_3
+    def value_shape(self):
+        return ()
 
 # functions of elastic constants on the whole domain
 E = E_class(degree=1)
 nu = nu_class(degree=1)
-mu=E/2/(1+nu)
-Lambda=E*nu/(1-nu*nu)
+mu = E/2/(1+nu)
+Lambda = E*nu/(1-nu*nu)
 
 
 

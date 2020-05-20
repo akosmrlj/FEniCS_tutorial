@@ -5,24 +5,24 @@ import matplotlib.pyplot as plt
 
 
 # Create rectangular mesh with circular hole
-N=50
-L=1
-R=0.2
+N = 50
+L = 1
+R = 0.2
 domain = Rectangle(Point(-L/2,-L/2),Point(L/2,L/2)) - Circle(Point(0.,0.), R)
-mesh=generate_mesh(domain, N)
+mesh = generate_mesh(domain, N)
 d = mesh.topology().dim() # dimensionality of the problem
 print("d = ",d)
 plot(mesh,linewidth=0.3)
 plt.show()
 
 # elastic constants
-E=1
-nu=0.4
-mu=E/2/(1+nu)
-Lambda=E*nu/(1-nu*nu)
+E = 1
+nu = 0.4
+mu = E/2/(1+nu)
+Lambda = E*nu/(1-nu*nu)
 
 # displacement of the clamped ends
-Delta=0.2*L
+Delta = 0.2*L
 
 
 #define vector function space, function u, and test function v
@@ -60,7 +60,7 @@ Res = derivative(Energy, u, v)
 solve(Res == 0, u, bc)
 
 # calculate elastic energy
-print("Energy = ",assemble(Energy))
+print("Energy = ", assemble(Energy))
 
 # export displacements
 u.rename("displacements","")

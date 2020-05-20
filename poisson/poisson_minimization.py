@@ -26,7 +26,9 @@ class G(UserExpression):
         super().__init__(**kwargs)
     def eval_cell(self, value, x, ufc_cell):
         value[0]=x[1]
-
+    def value_shape(self):
+        return ()
+    
 g  = G(degree=degreeElements)
 
 

@@ -36,7 +36,9 @@ class G(UserExpression):
         super().__init__(**kwargs)
     def eval_cell(self, value, x, ufc_cell):
         value[0]=x[1]
-
+    def value_shape(self):
+        return ()
+    
 g  = G(degree=degreeElements)
 
 
@@ -62,7 +64,7 @@ plt.show()
 
 # plot solution for div(a*grad(u))
 divSigma = project(div(sigma), FS)
-c=plot(divSigma,mode='color',title='$\\nabla \cdot (a \\nabla u)$',vmin=-1.1,vmax=-0.9)
+c = plot(divSigma,mode='color',title='$\\nabla \cdot (a \\nabla u)$',vmin=-1.1,vmax=-0.9)
 plt.colorbar(c)
 plot(mesh,linewidth=0.3)
 plt.show()
