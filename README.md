@@ -1,6 +1,6 @@
 # Tutorial on using FEniCS for solving PDEs
 
-This is the GitHub repository for a tutorial on using the [FEniCS](https://fenicsproject.org/) package to solve PDEs. These tutorial was prepared for the [KITP workshop Symmetry, Thermodynamics and Topology in Active Matter](https://www.kitp.ucsb.edu/activities/active20).
+This is the GitHub repository for a tutorial on using the [FEniCS](https://fenicsproject.org/) package to solve PDEs. This tutorial was prepared for the [KITP workshop Symmetry, Thermodynamics and Topology in Active Matter](https://www.kitp.ucsb.edu/activities/active20) and the recorded video is available [here](http://online.kitp.ucsb.edu/online/active20/tutorial4/).
 
 ## Layout 
 
